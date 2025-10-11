@@ -239,8 +239,10 @@ public:
 
 	float laserDistanceLeniency = 1.0f / 12.0f;
 
-	// Actual positions of the laser
+	// Actual positions of the laser cursor
 	float laserPositions[2];
+	// Positions of the laser cursor when there was no input
+	float ghostLaserPositions[2];
 	// Sampled target position of the lasers in the map
 	float laserTargetPositions[2] = { 0 };
 	// Current lasers are extended
@@ -318,7 +320,8 @@ private:
 
 	// Input values for laser [-1,1]
 	float m_laserInput[2] = { 0.0f };
-	// Decides if the coming tick should be auto completed
+	// Decides if the coming tick should be auto completed; how much time is left for the laser to auto complete.
+	// Used for when player turns knob early on laser turn sections.
 	float m_autoLaserTime[2] = { 0,0 };
 	
 	// Saves the time when a button was hit, used to decide if a button was held before a hold object was active
@@ -328,7 +331,7 @@ private:
 	MapTime m_buttonGuardTime[6] = { 0, 0, 0, 0, 0, 0 };
 
 	// Max number of ticks to assist
-	float m_assistLevel = 1.5f;
+	// float m_assistLevel = 1.5f;
 	float m_assistPunish = 1.5f;
 	float m_assistChangePeriod = 50.0f;
 	float m_assistChangeExponent = 1.0f;
