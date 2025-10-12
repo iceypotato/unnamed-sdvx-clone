@@ -1656,6 +1656,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 				if (inputDir != laserDir && currentSegment->flags & LaserObjectState::flag_Instant)
 				{
 					laserPositions[i] = currentSegment->points[1];
+					m_autoLaserTime[i] = m_assistTime;
 				}
 				// user inputs opposite of laser direction
 				else if (inputDir != laserDir && dirChangeTime == -1)
@@ -1671,17 +1672,20 @@ void Scoring::m_UpdateLasers(float deltaTime)
 			}
 
 			// ghost laser logic for mimicking visuals of sdvx
-			if (inputDir == 0.0f && laserDir != 0.0f && ghostLaserPositions[i] < 0) {
-				ghostLaserPositions[i] = laserPositions[i];
-			}
-			else if (inputDir != laserDir && m_autoLaserTime[i] <= 0) {
-				if (ghostLaserPositions[i] < 0)
+			if (!(currentSegment->flags & LaserObjectState::flag_Instant || laserDir == 0.0f)) {
+				if (inputDir == 0.0f && laserDir != 0.0f && ghostLaserPositions[i] < 0) {
 					ghostLaserPositions[i] = laserPositions[i];
-				ghostLaserPositions[i] += input;
-			}
-			if (ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) >= laserDistanceLeniency) {
-				laserPositions[i] = ghostLaserPositions[i];
-				ghostLaserPositions[i] = -1;
+				}
+				else if (inputDir != laserDir && m_autoLaserTime[i] <= 0) {
+					if (ghostLaserPositions[i] < 0)
+						ghostLaserPositions[i] = laserPositions[i];
+					if (fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency)
+						ghostLaserPositions[i] += input;
+				}
+				if (ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) >= laserDistanceLeniency) {
+					laserPositions[i] = ghostLaserPositions[i];
+					ghostLaserPositions[i] = -1;
+				}
 			}
 			timeSinceLaserUsed[i] = 0.0f;
 		}
@@ -1691,7 +1695,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 			//laserPositions[i] = laserTargetPositions[i];
 		}
 
-		if (currentlySlamNextSegmentStraight[i] || (timeSinceLaserUsed[i] == 0.0f && currentSegment->flags & LaserObjectState::flag_Instant))
+		if (currentlySlamNextSegmentStraight[i])
 			m_autoLaserTime[i] = 0;
 		//TODO(replay) update the laser position *if* having hits with autoplay
 		bool replay_laser = false;
@@ -1700,7 +1704,9 @@ void Scoring::m_UpdateLasers(float deltaTime)
 			const ReplayJudgement* judge = m_replay->FindNextJudgement(6+i, 1000);
 			replay_laser = judge && judge->rating > 0;
 		}
-		if (autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser || ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency) {
+		if ((autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser ||
+			ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency) &&
+			currentSegment && !(currentSegment->flags & LaserObjectState::flag_Instant)) {
 			laserPositions[i] = laserTargetPositions[i];
 		}
 
