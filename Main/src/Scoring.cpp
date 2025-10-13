@@ -1617,8 +1617,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 				m_autoLaserTime[i] = m_assistTime;
 			}
 			// lasers that are not straight
-			else if (inputDir != 0.0f)
-			{
+			else if (inputDir != 0.0f) {
 				if (laserDir < 0 && positionDelta < 0)
 				{
 					laserPositions[i] = Math::Max(laserPositions[i] + input, laserTargetPositions[i]);
@@ -1652,8 +1651,8 @@ void Scoring::m_UpdateLasers(float deltaTime)
 				{
 					m_autoLaserTime[i] = m_assistTime;
 				}
-				// user inputs opposite direction of slam
-				if (inputDir != laserDir && currentSegment->flags & LaserObjectState::flag_Instant)
+				// user inputs same/opposite direction of slam
+				if (currentSegment->flags & LaserObjectState::flag_Instant)
 				{
 					laserPositions[i] = currentSegment->points[1];
 					m_autoLaserTime[i] = m_assistTime;
@@ -1689,8 +1688,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 			}
 			timeSinceLaserUsed[i] = 0.0f;
 		}
-		else
-		{
+		else {
 			timeSinceLaserUsed[i] += deltaTime;
 			//laserPositions[i] = laserTargetPositions[i];
 		}
