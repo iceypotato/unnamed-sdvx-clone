@@ -819,6 +819,7 @@ void Scoring::m_OnObjectLeaved(ObjectState* obj)
 				laserPositions[upcommingLaser->index] = upcommingLaser->points[0];
 				laserTargetPositions[upcommingLaser->index] = upcommingLaser->points[0];
 				lasersAreExtend[upcommingLaser->index] = upcommingLaser->flags & LaserObjectState::flag_Extended;
+				break;
 			}
 		}
 	}
