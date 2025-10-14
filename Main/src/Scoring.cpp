@@ -147,6 +147,7 @@ void Scoring::Reset(const MapTimeRange& range)
 	laserPositions[1] = 1.0f;
 	timeSinceLaserUsed[0] = 1000.0f;
 	timeSinceLaserUsed[1] = 1000.0f;
+	m_laserSegmentQueue.clear();
 
 	memset(categorizedHits, 0, sizeof(categorizedHits));
 	memset(timedHits, 0, sizeof(timedHits));
@@ -812,6 +813,14 @@ void Scoring::m_OnObjectLeaved(ObjectState* obj)
 		if (laser->next != nullptr)
 			return; // Only terminate holds on last of laser section
 		obj = *laser->GetRoot();
+		for (auto upcommingLaser : m_laserSegmentQueue) {
+			if (upcommingLaser->index == laser->index) {
+				timeSinceLaserUsed[upcommingLaser->index] = 0;
+				laserPositions[upcommingLaser->index] = upcommingLaser->points[0];
+				laserTargetPositions[upcommingLaser->index] = upcommingLaser->points[0];
+				lasersAreExtend[upcommingLaser->index] = upcommingLaser->flags & LaserObjectState::flag_Extended;
+			}
+		}
 	}
 	m_ReleaseHoldObject(obj);
 }
@@ -1651,18 +1660,18 @@ void Scoring::m_UpdateLasers(float deltaTime)
 				{
 					m_autoLaserTime[i] = m_assistTime;
 				}
-				// user inputs same/opposite direction of slam
-				if (currentSegment->flags & LaserObjectState::flag_Instant)
-				{
-					laserPositions[i] = currentSegment->points[1];
-					m_autoLaserTime[i] = m_assistTime;
-				}
 				// user inputs opposite of laser direction
 				else if (inputDir != laserDir && dirChangeTime == -1)
 				{
 					// punishMult is used to lower the decrement rate of autoLaserTime
 					m_autoLaserTime[i] -= deltaTime * m_assistPunish;
 					//m_autoLaserTime[i] = Math::Min(m_autoLaserTime[i], m_assistTime * 0.2f);
+				}
+				// user inputs same/opposite direction of slam
+				if (currentSegment->flags & LaserObjectState::flag_Instant)
+				{
+					laserPositions[i] = currentSegment->points[1];
+					m_autoLaserTime[i] = m_assistTime;
 				}
 			}
 			// laser is not straight and no input
