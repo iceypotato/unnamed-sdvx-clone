@@ -1700,6 +1700,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 		}
 		else {
 			timeSinceLaserUsed[i] += deltaTime;
+			ghostLaserPositions[i] = -1;
 			//laserPositions[i] = laserTargetPositions[i];
 		}
 
