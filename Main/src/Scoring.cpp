@@ -813,15 +813,15 @@ void Scoring::m_OnObjectLeaved(ObjectState* obj)
 		if (laser->next != nullptr)
 			return; // Only terminate holds on last of laser section
 		obj = *laser->GetRoot();
-		for (auto upcommingLaser : m_laserSegmentQueue) {
-			if (upcommingLaser->index == laser->index) {
-				timeSinceLaserUsed[upcommingLaser->index] = 0;
-				laserPositions[upcommingLaser->index] = upcommingLaser->points[0];
-				laserTargetPositions[upcommingLaser->index] = upcommingLaser->points[0];
-				lasersAreExtend[upcommingLaser->index] = upcommingLaser->flags & LaserObjectState::flag_Extended;
-				break;
-			}
-		}
+		// for (auto upcommingLaser : m_laserSegmentQueue) {
+		// 	if (upcommingLaser->index == laser->index) {
+		// 		timeSinceLaserUsed[upcommingLaser->index] = 0;
+		// 		laserPositions[upcommingLaser->index] = upcommingLaser->points[0];
+		// 		laserTargetPositions[upcommingLaser->index] = upcommingLaser->points[0];
+		// 		lasersAreExtend[upcommingLaser->index] = upcommingLaser->flags & LaserObjectState::flag_Extended;
+		// 		break;
+		// 	}
+		// }
 	}
 	m_ReleaseHoldObject(obj);
 }
@@ -1587,6 +1587,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 						{
 							laserTargetPositions[i] = o->points[0];
 							lasersAreExtend[i] = o->flags & LaserObjectState::flag_Extended;
+							laserPositions[i] = o->points[0];
 							break;
 						}
 					}
@@ -1695,6 +1696,8 @@ void Scoring::m_UpdateLasers(float deltaTime)
 					laserPositions[i] = ghostLaserPositions[i];
 					ghostLaserPositions[i] = -1;
 				}
+				if (inputDir == laserDir)
+					ghostLaserPositions[i] = -1;
 			}
 			timeSinceLaserUsed[i] = 0.0f;
 		}
