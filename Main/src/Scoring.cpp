@@ -1710,7 +1710,7 @@ void Scoring::m_UpdateLasers(float deltaTime)
 		}
 		bool isNotSlam = currentSegment && !(currentSegment->flags & LaserObjectState::flag_Instant);
 		bool isGhostCursorInRange = ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency;
-		if (autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser || isGhostCursorInRange && isNotSlam) {
+		if ((autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser || isGhostCursorInRange) && isNotSlam) {
 			laserPositions[i] = laserTargetPositions[i];
 		}
 
