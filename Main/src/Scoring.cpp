@@ -813,15 +813,6 @@ void Scoring::m_OnObjectLeaved(ObjectState* obj)
 		if (laser->next != nullptr)
 			return; // Only terminate holds on last of laser section
 		obj = *laser->GetRoot();
-		// for (auto upcommingLaser : m_laserSegmentQueue) {
-		// 	if (upcommingLaser->index == laser->index) {
-		// 		timeSinceLaserUsed[upcommingLaser->index] = 0;
-		// 		laserPositions[upcommingLaser->index] = upcommingLaser->points[0];
-		// 		laserTargetPositions[upcommingLaser->index] = upcommingLaser->points[0];
-		// 		lasersAreExtend[upcommingLaser->index] = upcommingLaser->flags & LaserObjectState::flag_Extended;
-		// 		break;
-		// 	}
-		// }
 	}
 	m_ReleaseHoldObject(obj);
 }
@@ -1689,7 +1680,8 @@ void Scoring::m_UpdateLasers(float deltaTime)
 				else if (inputDir != laserDir && m_autoLaserTime[i] <= 0) {
 					if (ghostLaserPositions[i] < 0)
 						ghostLaserPositions[i] = laserPositions[i];
-					if (fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency)
+					bool isCursorAheadOfLaser = laserDir < 0 && positionDelta > 0 || laserDir > 0 && positionDelta < 0;
+					if (fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency && !isCursorAheadOfLaser)
 						ghostLaserPositions[i] += input;
 				}
 				if (ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) >= laserDistanceLeniency) {
@@ -1716,9 +1708,9 @@ void Scoring::m_UpdateLasers(float deltaTime)
 			const ReplayJudgement* judge = m_replay->FindNextJudgement(6+i, 1000);
 			replay_laser = judge && judge->rating > 0;
 		}
-		if ((autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser ||
-			ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency) &&
-			currentSegment && !(currentSegment->flags & LaserObjectState::flag_Instant)) {
+		bool isNotSlam = currentSegment && !(currentSegment->flags & LaserObjectState::flag_Instant);
+		bool isGhostCursorInRange = ghostLaserPositions[i] > -1 && fabs(laserTargetPositions[i] - ghostLaserPositions[i]) < laserDistanceLeniency;
+		if (autoplayInfo.autoplay || m_autoLaserTime[i] > 0 || replay_laser || isGhostCursorInRange && isNotSlam) {
 			laserPositions[i] = laserTargetPositions[i];
 		}
 
