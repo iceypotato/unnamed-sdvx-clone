@@ -6,9 +6,10 @@ macro(enable_precompiled_headers src pchSrc)
         #message("Enabling precompiled header generated from source file ${pchSrc}")
         #message("Files using precompiled headers => ${src}")
         # Set precompiled header usage
-        set_source_files_properties(${src} PROPERTIES COMPILE_FLAGS "/Yu")
+        set(path ${pchSrc})
+        cmake_path(GET path FILENAME pchFilename)
+        set_source_files_properties(${src} PROPERTIES COMPILE_FLAGS "/Yc${pchFilename}")
         # Set precompiled header
-        set_source_files_properties(${pchSrc} PROPERTIES COMPILE_FLAGS "/Yc")
     endif(MSVC)
 endmacro(enable_precompiled_headers)
 

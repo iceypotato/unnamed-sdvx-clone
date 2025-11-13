@@ -15,7 +15,7 @@ set(PCH_FILES ${PCH_SRC} ${PCH_INC})
 source_group("" FILES ${PCH_FILES})
 
 # Compiler stuff
-enable_precompiled_headers("${TESTS_GAME_SRC}" ${PCH_SRC})
+enable_precompiled_headers("${PCH_SRC}" "${PCH_INC}")
 
 add_executable(Tests.Game ${TESTS_GAME_SRC} ${PCH_FILES})
 target_compile_features(Tests.Game PUBLIC cxx_std_17)

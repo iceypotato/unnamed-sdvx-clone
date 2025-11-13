@@ -21,7 +21,7 @@ set(PCH_FILES ${PCH_SRC} ${PCH_INC})
 source_group("" FILES ${PCH_FILES})
 
 # Compiler stuff
-enable_precompiled_headers("${BEATMAP_SRC}" ${PCH_SRC})
+enable_precompiled_headers("${PCH_SRC}" "${PCH_INC}")
 
 add_library(Beatmap ${BEATMAP_SRC} ${PCH_FILES})
 target_compile_features(Beatmap PUBLIC cxx_std_17)

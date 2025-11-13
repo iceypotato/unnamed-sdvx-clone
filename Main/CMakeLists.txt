@@ -44,7 +44,7 @@ set(PCH_FILES ${PCH_SRC} ${PCH_INC})
 source_group("" FILES ${PCH_FILES})
 
 # Compiler stuff
-enable_precompiled_headers("${MAIN_SRC}" ${PCH_SRC})
+enable_precompiled_headers("${PCH_SRC}" "${PCH_INC}")
 
 include_directories(Audio GUI .)
 add_executable(usc-game ${MAIN_SRC} ${RESOURCE_SRC} ${PCH_FILES})

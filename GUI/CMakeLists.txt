@@ -19,7 +19,7 @@ set(PCH_FILES ${PCH_SRC} ${PCH_INC})
 source_group("" FILES ${PCH_FILES})
 
 # Compiler stuff
-enable_precompiled_headers("${GUI_SRC}" ${PCH_SRC})
+enable_precompiled_headers("${PCH_SRC}" "${PCH_INC}")
 
 add_library(GUI ${GUI_SRC} ${PCH_FILES})
 target_compile_features(GUI PUBLIC cxx_std_17)
