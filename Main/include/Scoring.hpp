@@ -237,7 +237,7 @@ public:
 
 	struct AutoplayInfo autoplayInfo;
 
-	float laserDistanceLeniency = 1.0f / 12.0f;
+	float laserDistanceLeniency = 1.5f / 12.0f;
 
 	// Actual positions of the laser cursor
 	float laserPositions[2];

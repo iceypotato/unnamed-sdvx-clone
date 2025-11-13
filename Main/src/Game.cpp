@@ -2327,7 +2327,7 @@ public:
 		if (hitEffect)
 		{
 			ButtonObjectState* st = (ButtonObjectState*)object;
-			//m_hiddenObjects.insert(object);
+			m_hiddenObjects.insert(object);
 			m_track->AddHitEffect(buttonIdx, c);
 		}
 		m_track->AddEffect(new ButtonHitRatingEffect(buttonIdx, ScoreHitRating::Miss));
