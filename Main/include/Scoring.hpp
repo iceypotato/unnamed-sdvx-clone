@@ -70,12 +70,15 @@ struct MapTotals
 {
 	// Number of single notes
 	uint32 numSingles;
+	// Number of slams
+	uint32 numSlams;
 	// Number of laser/hold ticks
 	uint32 numTicks;
 	// The maximum possible score a map can give
 	// The score is calculated per 2 (2 = critical, 1 = near)
 	// Hold buttons, lasers, etc. give 2 points per tick
 	uint32 maxScore;
+
 };
 
 /*

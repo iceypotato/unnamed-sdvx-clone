@@ -1780,7 +1780,7 @@ void Scoring::m_OnButtonReleased(Input::Button buttonCode, int32 delta)
 
 MapTotals Scoring::CalculateMapTotals() const
 {
-	MapTotals ret = { 0, 0, 0 };
+	MapTotals ret = { 0, 0, 0, 0};
 	const Beatmap& map = m_playback->GetBeatmap();
 
 	Set<const LaserObjectState*> processedLasers;
@@ -1813,7 +1813,15 @@ MapTotals Scoring::CalculateMapTotals() const
 				Vector<ScoreTick> laserTicks;
 				m_CalculateLaserTicks((LaserObjectState*)obj, laserTicks);
 				ret.maxScore += (uint32)ScoreHitRating::Perfect * (uint32)laserTicks.size();
-				ret.numTicks += (uint32)laserTicks.size();
+				for (auto laserTick : laserTicks) {
+					if (laserTick.HasFlag(TickFlags::Slam)) {
+						ret.numSingles += 1;
+						ret.numSlams += 1;
+					}
+					else {
+						ret.numTicks += 1;
+					}
+				}
 				processedLasers.Add(laserRoot);
 			}
 		}
